@@ -1,0 +1,27 @@
+
+
+# need 
+oracle 11g client 11.2 or later
+
+export PKG_CONFIG_PATH=/data/oracle/client/lib/pkgconfig
+
+> ls /data/oracle/client/lib/pkgconfig
+> oci8.pc
+
+# oci8.pc
+```
+ prefix=/data/oracle/client   // your client path
+ version=11.2
+ libdir=${prefix}/lib
+ includedir=${prefix}/rdbms/public
+ 
+ Name: oci8
+ Description: Oracle database engine
+ Version: ${version}
+ Libs: -L${libdir} -lclntsh
+ Libs.private:
+ Cflags: -I${includedir}
+
+```
+
+

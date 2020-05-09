@@ -1,0 +1,6 @@
+
+common structure rules
+
+  rpc struct
+  protobuf struct
+  data structure in db (mssql mysql mongo ...)

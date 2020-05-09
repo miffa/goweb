@@ -1,0 +1,10 @@
+
+# resource module
+> resource is including ...
+>     redis pool
+>     mongo conn pool
+>     mysql db conn pool
+>     thirdurl api
+
+
+
