@@ -5,7 +5,7 @@
 ``` 
  cd $GOPATH/src
  git clone https://github.com/miffa/goweb.git
- cd tpaasportal
+ cd goweb
  #project_name must be unique
  ./initproject.sh project_name
  cd project_name
