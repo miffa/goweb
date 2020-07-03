@@ -81,6 +81,7 @@ func ResponseError(ctx iris.Context, code int, msg string, data interface{}) {
 	responseLog(ctx, msg)
 	ctx.Values().Set(define.CTX_RESP_STS_KEY, msg)
 	tracinglog.FinishSpan(ctx)
+	ctx.Next()
 	return
 }
 
@@ -92,6 +93,7 @@ func ResponseErr(ctx iris.Context, code int, msg string) {
 	responseLog(ctx, msg)
 	ctx.Values().Set(define.CTX_RESP_STS_KEY, msg)
 	tracinglog.FinishSpan(ctx)
+	ctx.Next()
 	return
 }
 
@@ -104,6 +106,7 @@ func ReponseOk(ctx iris.Context, respdata interface{}) {
 	ctx.Values().Set(define.CTX_RESP_STS_KEY, "OK")
 	responseLog(ctx, respdata)
 	tracinglog.FinishSpan(ctx)
+	ctx.Next()
 	return
 }
 
