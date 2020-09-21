@@ -5,20 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- 抽取公共函数，可以单独更新
+- 未发布
 
-## [V2.00] - 2019-06-16
-### Added
-- 支持opentracing
-- ratelimit限流插件
-
-### Changed
-- 抽取了lib为单独工程
-
-### Removed
-- lib package
-
-## [V1.00] - 2019-04-26
+## [V0.01] - 2020-05-09
 ### Added
 - 初始化第一版本 
 

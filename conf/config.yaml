@@ -1,0 +1,20 @@
+common:
+  service_log: "" # log file path  /data/logs/mybinary.log  if not set , log output to stdout  
+  log_level: "debug" #
+  pid_file: "/data/logs/OpsPortal.pid"
+
+http:
+  serviceid: "myservice"
+  http_addr: "0.0.0.0:8088"
+  pprof_addr: "127.0.0.1:6489"
+  http_timeout: 30
+
+mysql:
+  datasource: "dbuser:xxxxxxxx@tcp(10.101.255.255:39999)/mydbc?parseTime=true&loc=Local&charset=utf8"
+  maxconn: 100
+
+auth:
+  urls:
+  - "http://172.27.139.93:8090"
+  - "http://172.27.139.93:8090"
+
