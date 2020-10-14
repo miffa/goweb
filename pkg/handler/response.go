@@ -11,7 +11,8 @@ func ResponseErrMsg(ctx iris.Context, err error) {
 	resp.Code, resp.Msg, resp.Detail = define.ErrorMsg(err)
 	ctx.JSON(resp)
 	ctx.Values().Set(define.CtxRespStsKey, resp.Detail)
-	//ctx.Next() if api  err, no need process Done middleware
+	//if you want to set http code,  call this function :ctx.StatusCode(your code)
+	//ctx.StatusCode(resp.Code)
 	ResponseLog(ctx)
 	return
 }
@@ -21,8 +22,9 @@ func ResponseErr(ctx iris.Context, code int, msg string) {
 	resp.Code = code
 	resp.Msg = msg
 	ctx.Values().Set(define.CtxRespStsKey, msg)
+	//if you want to set http code,  call this function :ctx.StatusCode(your code)
+	//ctx.StatusCode(code)
 	ctx.JSON(resp)
-	//ctx.Next()   if api  err, no need process Done middleware
 	ResponseLog(ctx)
 	return
 }

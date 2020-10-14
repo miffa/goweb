@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"path"
 	"runtime"
 	"strconv"
 	"strings"
@@ -18,6 +17,7 @@ import (
 	"iris/pkg/router"
 	"iris/pkg/version"
 
+	"iris/pkg/libs/bufferpool"
 	"iris/pkg/libs/perf"
 	"iris/pkg/libs/rotatefd"
 
@@ -59,17 +59,23 @@ func main() {
 	defer rf.Close()
 	log.SetFormatter(&log.JSONFormatter{
 		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-			//s := strings.Split(f.Function, ".")
-			//funcname := s[len(s)-1]
-			_, filename := path.Split(f.File)
-			funcname := f.Function
-			//filename := f.File
-			//pos := strings.LastIndex(f.File, "pkg/")
-			//if pos != -1 {
-			//	filename = string(f.File[pos+4:])
-			//}
-			return funcname, filename
 
+			s := strings.Split(f.Function, "/")
+			funcname := s[len(s)-1]
+			buf := bufferpool.Get()
+			flen := len(f.File)
+			if flen > 20 {
+				buf.WriteString("...")
+				buf.WriteString(f.File[flen-20+3:])
+				//filename = filename[flen-20:]
+				//filename = "..." + filename[3:]
+			}
+			buf.WriteString(":")
+			buf.WriteString(strconv.Itoa(f.Line))
+			filename := buf.String()
+			buf.Reset()
+			bufferpool.Put(buf)
+			return funcname, filename
 		},
 	})
 	log.SetOutput(rf)
@@ -167,6 +173,8 @@ func InitSignal() {
 			//todo: Define your signal processing functions
 		case syscall.SIGUSR1:
 			// todo: Define signal processing functions
+			config.ReloadGloableCfg()
+			iocgo.ReloadEngine(config.GloableCfg())
 			//return
 		default:
 			return

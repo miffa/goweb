@@ -7,15 +7,48 @@ import (
 	"github.com/spf13/viper"
 )
 
+var cfg *TpaasConfig
+
 type TpaasConfig struct {
-	Viper *viper.Viper
+	Viper      *viper.Viper
+	configFile string
+}
+
+func NewGloableTpaasConfig(f string) error {
+	tcfg, err := NewTpaasConfig(f)
+	if err != nil {
+		return err
+	}
+	cfg = tcfg
+	return nil
+}
+
+func GloableCfg() *TpaasConfig {
+	return cfg
+}
+
+func ReloadGloableCfg() error {
+	return cfg.ReloadTpaasConfig()
 }
 
 func NewTpaasConfig(f string) (*TpaasConfig, error) {
 	c := new(TpaasConfig)
 	c.Viper = viper.New()
 	c.Viper.SetConfigFile(f)
+	c.configFile = f
 	return c, c.Viper.ReadInConfig()
+}
+
+func (c *TpaasConfig) ReloadTpaasConfig() error {
+	cc := new(TpaasConfig)
+	cc.Viper = viper.New()
+	cc.Viper.SetConfigFile(c.configFile)
+	err := cc.Viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+	c = cc
+	return nil
 }
 
 func (c *TpaasConfig) Get(key string) interface{} {

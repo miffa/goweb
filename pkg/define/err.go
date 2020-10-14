@@ -1,6 +1,9 @@
 package define
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 const (
 	InnerServerErr = "服务器内部错误"
@@ -157,6 +160,9 @@ type errInnerServer struct {
 }
 
 func ErrInnerServer(f string, err error) error {
+	if err == nil {
+		err = errors.New("内部错误")
+	}
 	return &errInnerServer{Code: ST_SER_ERROR, Func: f, Err: err}
 }
 

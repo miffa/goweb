@@ -18,6 +18,7 @@ func (a *API) InitRouter() *API {
 
 	// keepalived api
 	a.Get("/do_not_delete.html", nil)
+	a.Any("/-/reload", handler.Reload)
 
 	//global api demo
 	{

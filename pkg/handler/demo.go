@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/kataras/iris/v12"
 
+	"iris/pkg/config"
 	"iris/pkg/define"
+	"iris/pkg/iocgo"
 	"iris/pkg/service"
 
 	log "github.com/sirupsen/logrus"
@@ -45,4 +47,10 @@ func Demo3(ctx iris.Context) {
 	}
 	ResponseOk(ctx, retdata)
 	log.Debugf("demo reponse ok")
+}
+
+func Reload(ctx iris.Context) {
+	config.ReloadGloableCfg()
+	iocgo.ReloadEngine(config.GloableCfg())
+	ResponseOk(ctx, "OK")
 }

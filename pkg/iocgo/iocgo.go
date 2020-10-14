@@ -2,6 +2,7 @@ package iocgo
 
 import (
 	"iris/pkg/config"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
@@ -10,6 +11,7 @@ import (
 type Initializer interface {
 	Init(cfg *config.TpaasConfig) error
 	Close() error
+	Reload(cfg *config.TpaasConfig) error
 }
 
 var servie_pool []*ServiceItem
@@ -32,6 +34,19 @@ func LaunchEngine(cfg *config.TpaasConfig) (err error) {
 			return errors.Errorf("init resource[%s] err:%v", initfunc.name, err)
 		}
 		log.Infof("init resource[%s] ok", initfunc.name)
+	}
+
+	return nil
+}
+
+func ReloadEngine(cfg *config.TpaasConfig) (err error) {
+	for _, initfunc := range servie_pool {
+		err = initfunc.initptr.Reload(cfg)
+		if err != nil {
+			log.Errorf("reload resource[%s] err:%v", initfunc.name, err)
+			return errors.Errorf("reload resource[%s] err:%v", initfunc.name, err)
+		}
+		log.Infof("reload resource[%s] ok", initfunc.name)
 	}
 
 	return nil
