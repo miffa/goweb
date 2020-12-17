@@ -5,6 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/pkg/errors"
 )
 
@@ -35,8 +36,15 @@ func LaunchEngine(cfg *config.TpaasConfig) (err error) {
 		}
 		log.Infof("init resource[%s] ok", initfunc.name)
 	}
-
+	// when config file changed
+	// 1. the config will be reloaded automatically
+	// 2. notify the serverEngine and call ReloadEngineNotifier to reoload ServerEngine
+	cfg.Notify(ReloadEngineNotifier)
 	return nil
+}
+
+func ReloadEngineNotifier(e fsnotify.Event) {
+	ReloadEngine(config.GloableCfg())
 }
 
 func ReloadEngine(cfg *config.TpaasConfig) (err error) {

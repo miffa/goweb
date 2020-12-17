@@ -22,15 +22,13 @@ type HandFunc = context.Handler // func(ctx iris.Context)
 type RespJson struct {
 	Code   int         `json:"code"`
 	Msg    string      `json:"msg"`
-	Data   interface{} `json:"data"`
-	Detail string      `json:detail, omitempty`
+	Data   interface{} `json:"data,omitempty"`
+	Detail interface{} `json:"detail,omitempty"`
 }
 
 func NewRespJson() *RespJson {
 	return &RespJson{
-		Code:   define.ST_OK,
-		Data:   0,
-		Detail: "",
+		Code: define.ST_OK,
 	}
 }
 
@@ -42,7 +40,6 @@ func GetString(ctx iris.Context, k string) string {
 
 	data := ctx.FormValue(k)
 	if data == "" {
-		ResponseErr(ctx, define.ST_ARGS_ERROR, k+"is empty")
 		return ""
 	}
 	return data
@@ -51,7 +48,6 @@ func GetString(ctx iris.Context, k string) string {
 func GetInt(ctx iris.Context, k string) int {
 	data, err := strconv.Atoi(ctx.FormValue(k))
 	if err != nil {
-		ResponseErr(ctx, define.ST_ARGS_ERROR, k+"is invilid")
 		return -1
 	}
 	return data
@@ -59,7 +55,6 @@ func GetInt(ctx iris.Context, k string) int {
 func GetInt64(ctx iris.Context, k string) int64 {
 	data, err := strconv.ParseInt(ctx.FormValue(k), 10, 64)
 	if err != nil {
-		ResponseErr(ctx, define.ST_ARGS_ERROR, k+"is invalid")
 		return -1
 	}
 	return data
@@ -73,7 +68,6 @@ func RequestLog(ctx iris.Context) {
 	user := ctx.Values().Get(define.ReqUserKey)
 	begin := time.Now()
 	ctx.Values().Set(define.CosTimeKey, begin.UnixNano())
-
 	log.WithField("serino", begin.UnixNano()).WithField("path", ctx.Path()).WithField("peer", ctx.RemoteAddr()).WithField("user", user).Info(params)
 	ctx.Next()
 }
@@ -93,15 +87,15 @@ func ResponseLog(ctx iris.Context) {
 			WithField("serino", begin).
 			WithField("peer", peerin).
 			WithField("user", user).
-			WithField("remote_ip", ctx.Request().RemoteAddr).
-			WithField("costtime", costtime).Debug(respdata)
+			//WithField("remote_ip", ctx.Request().RemoteAddr).
+			WithField("zcosttime", costtime).Debug(respdata)
 
 	} else {
 		log.WithField("path", ctx.Path()).
 			WithField("serino", begin).
 			WithField("peer", peerin).
 			WithField("user", user).
-			WithField("remote_ip", ctx.Request().RemoteAddr).
-			WithField("costtime", costtime).Info(respdata)
+			//WithField("remote_ip", ctx.Request().RemoteAddr).
+			WithField("zcosttime", costtime).Info(respdata)
 	}
 }

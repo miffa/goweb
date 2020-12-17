@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 )
@@ -20,6 +21,7 @@ func NewGloableTpaasConfig(f string) error {
 		return err
 	}
 	cfg = tcfg
+	cfg.WatchReload()
 	return nil
 }
 
@@ -39,6 +41,17 @@ func NewTpaasConfig(f string) (*TpaasConfig, error) {
 	return c, c.Viper.ReadInConfig()
 }
 
+//will reload config automatically
+func (c *TpaasConfig) WatchReload() {
+	c.Viper.WatchConfig()
+}
+
+func (c *TpaasConfig) Notify(fff func(e fsnotify.Event)) {
+	// if the config is reloaded ok, notify another reload
+	c.Viper.OnConfigChange(fff)
+}
+
+// reload config manually
 func (c *TpaasConfig) ReloadTpaasConfig() error {
 	cc := new(TpaasConfig)
 	cc.Viper = viper.New()

@@ -51,9 +51,6 @@ func main() {
 		return
 	}
 
-	//cfggstr, _ := json.Marshal(cfg.GetAllConfig())
-	//fmt.Printf("---%s\n", string(cfggstr))
-
 	// logger
 	rf := rotatefd.NewRotateFile(cfg.GetString("common.service_log"), 100*rotatefd.MiB)
 	defer rf.Close()
@@ -160,13 +157,13 @@ func main() {
 
 func InitSignal() {
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGSTOP, syscall.SIGUSR1, syscall.SIGUSR2)
+	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGUSR1, syscall.SIGUSR2)
 	//log.Infof("Wait for signal.......")
 	for {
 		s := <-c
 		log.Infof("service[%s] get a signal %s", version.Version, s.String())
 		switch s {
-		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGSTOP, syscall.SIGINT, syscall.SIGHUP:
+		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP:
 			GracefulQuit()
 			return
 		case syscall.SIGUSR2:

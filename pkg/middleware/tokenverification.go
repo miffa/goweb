@@ -17,17 +17,17 @@ func CheckToken(ctx iris.Context) {
 
 	tokenstr := ctx.Request().Header.Get("Authorization")
 	if tokenstr == "" {
-		handler.ResponseErr(ctx, define.ST_TOKEN_OUT, "token非法")
+		handler.ResponseErrMsg(ctx, define.ST_TOKEN_OUT, "token非法")
 		return
 	}
 	tokens := strings.Split(tokenstr, " ")
 	if len(tokens) != 2 {
-		handler.ResponseErr(ctx, define.ST_TOKEN_OUT, "token非法")
+		handler.ResponseErrMsg(ctx, define.ST_TOKEN_OUT, "token非法")
 		return
 	}
 
 	if u, err := auth.TokenWithSession(tokens[1]); err != nil {
-		handler.ResponseErr(ctx, define.ST_TOKEN_OUT, "token非法")
+		handler.ResponseErrMsg(ctx, define.ST_TOKEN_OUT, "token非法")
 		return
 	} else {
 		ctx.Values().Set(define.ReqUserKey, u.Name)

@@ -2,6 +2,7 @@ package dbpool
 
 import (
 	"iris/pkg/config"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -10,7 +11,7 @@ import (
 var dbpool *TpaasDbPool
 
 type TpaasDbPool struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func Pool() *TpaasDbPool {
@@ -22,21 +23,42 @@ func Pool() *TpaasDbPool {
 
 func (d *TpaasDbPool) Init(cfg *config.TpaasConfig) error {
 	var err error
-	d.db, err = gorm.Open("mysql", cfg.GetString("mysql.datasource"))
+	d.DB, err = gorm.Open("mysql", cfg.GetString("mysql.datasource"))
 	if err != nil {
 		return err
+	}
+	maxopen := cfg.GetInt("mysql.max_open_conn")
+	if maxopen == 0 {
+		maxopen = 50
+	}
+	d.DB.DB().SetMaxOpenConns(maxopen)
+
+	maxidle := cfg.GetInt("mysql.max_idle_conn")
+	if maxidle == 0 {
+		maxidle = 5
+	}
+	d.DB.DB().SetMaxIdleConns(maxidle)
+
+	maxlifetime := cfg.GetInt("mysql.max_conn_lifetime")
+	if maxlifetime != 0 {
+		d.DB.DB().SetConnMaxLifetime(time.Duration(maxlifetime) * time.Minute)
+	}
+
+	maxidletime := cfg.GetInt("mysql.max_conn_idletime")
+	if maxidletime != 0 {
+		d.DB.DB().SetConnMaxIdleTime(time.Duration(maxidletime) * time.Minute)
 	}
 	return nil
 }
 
 func (d *TpaasDbPool) Close() error {
-	return d.db.Close()
+	return d.DB.Close()
 }
 
 func NewDbPoolWithDsn(dsn string) (*TpaasDbPool, error) {
 	dbpool := new(TpaasDbPool)
 	var err error
-	dbpool.db, err = gorm.Open("mysql", dsn)
+	dbpool.DB, err = gorm.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}

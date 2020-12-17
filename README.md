@@ -96,7 +96,7 @@ handler package
      Status int         `json:"code"`     // 返给前端的业务码， 可以使用define中定义的业务码
      Msg    string      `json:"msg"`      // 返给前端的展示消息（一般用于出错时展示）
      Data   interface{} `json:"data"`     // 返给前端的数据
-     Detail string      `json:detail, omitempty`  //返给前端的出错专业信息（前端不显示，方便开发人员排错）
+     Detail interface{} `json:detail, omitempty`  //返给前端的出错专业信息（前端不显示，方便开发人员排错）
  } 
 ```  
 + 应答码和应答错误  
@@ -192,6 +192,7 @@ handler package
     // 全局变量资源或者单件类资源初始化interface
      type Initializer interface {
          Init(cfg *config.TpaasConfig) error
+         Reload(cfg *config.TpaasConfig) error    //reload  配置, 热更新单件类资源和全局资源
          Close() error
     }
 

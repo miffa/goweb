@@ -2,14 +2,19 @@ package auth
 
 import (
 	"fmt"
+	"iris/pkg/config"
+	"iris/pkg/iocgo"
 	"math/rand"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
 	LoginUri  = "/api/v1/login/db" //post
 	LogoutUri = "/api/v1/logout"
 
+	//todo: use new permission list api
 	NsAuthUri  = "/api/v1/current/authenticate/%s"
 	AppAuthUri = "/api/v1/current/authenticate/%s/%s"
 
@@ -22,13 +27,45 @@ const (
 	HttpTimeout = 5
 )
 
+const (
+	TpaasUrlCfgKey = "tpaas.urls"
+)
+
 var (
 	authurl []string
 )
 
+type TpaasUrlCfg struct {
+}
+
+func (rl *TpaasUrlCfg) Init(cfg *config.TpaasConfig) error {
+	authurl = cfg.GetStringSlice(TpaasUrlCfgKey)
+	if len(authurl) == 0 {
+		return errors.Errorf("config %s is invalid", TpaasUrlCfgKey)
+	}
+	return nil
+}
+
+func (rl *TpaasUrlCfg) Reload(cfg *config.TpaasConfig) error {
+	authurl = cfg.GetStringSlice(TpaasUrlCfgKey)
+	if len(authurl) == 0 {
+		return errors.Errorf("config %s is invalid", TpaasUrlCfgKey)
+	}
+	return nil
+}
+
+func (rl *TpaasUrlCfg) Close() error {
+	return nil
+}
+
 func Init(authurls []string) error {
 	authurl = authurls
 	return nil
+}
+
+func init() {
+	iocgo.Register("tpaasinfo", new(TpaasUrlCfg))
+
 }
 
 //////////////////

@@ -74,6 +74,10 @@ func (a *API) SetLog(w io.Writer) *API {
 	return a
 }
 
+func (a *API) OnErrorCodeLog(code int, ff func(ctx iris.Context)) {
+	a.OnErrorCode(code, ff)
+}
+
 func (a *API) Runapi(ippost string) error {
 	listenerCfg := tcplisten.Config{
 		ReusePort:   true,

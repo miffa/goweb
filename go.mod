@@ -6,6 +6,7 @@ require (
 	github.com/Shopify/sarama v1.26.4
 	github.com/coreos/etcd v3.3.22+incompatible // indirect
 	github.com/elazarl/goproxy v0.0.0-20200426045556-49ad98f6dac1
+	github.com/fsnotify/fsnotify v1.4.7
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.1.1 // indirect

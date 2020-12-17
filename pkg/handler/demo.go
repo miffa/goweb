@@ -32,17 +32,24 @@ func Demo(ctx iris.Context) {
 func Demo2(ctx iris.Context) {
 	retdata, err := service.GetSingleTon().Demook2()
 	if err != nil {
-		ResponseErr(ctx, define.ST_SER_ERROR, err.Error())
+		ResponseErrMsg(ctx, define.ST_SER_ERROR, err.Error())
 		return
 	}
+	var user struct {
+		Name string `json:"gege"`
+		Age  int    `json:"age"`
+	}
+
+	mybull := ctx.Request().Header.Get("myname")
+	ctx.ReadJSON(&user)
 	ResponseOk(ctx, retdata)
-	log.Debugf("demo reponse ok")
+	log.Debugf("%s demo reponse ok:%v", mybull, user)
 }
 
 func Demo3(ctx iris.Context) {
 	retdata, err := service.GetSingleTon().Demook3()
 	if err != nil {
-		ResponseErrMsg(ctx, err)
+		ResponseErr(ctx, err)
 		return
 	}
 	ResponseOk(ctx, retdata)
